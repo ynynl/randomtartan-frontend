@@ -1,0 +1,98 @@
+.App {
+  padding-top: 4.5rem;
+  text-align: center;
+  font: 400 16px/1.5 exo, ubuntu, "segoe ui", helvetica, arial, sans-serif;
+}
+
+.App-header {
+  min-height: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Cool infinite background scrolling animation.
+* Twitter: @kootoopas
+*/
+
+/* Background data (Original source: https://subtlepatterns.com/grid-me/) */
+$bg-width: 256px;
+$bg-height: 256px;
+
+/* Animations */
+@-webkit-keyframes bg-scrolling-reverse {
+  100% {
+    background-position: $bg-width $bg-height;
+  }
+}
+@-moz-keyframes bg-scrolling-reverse {
+  100% {
+    background-position: $bg-width $bg-height;
+  }
+}
+@-o-keyframes bg-scrolling-reverse {
+  100% {
+    background-position: $bg-width $bg-height;
+  }
+}
+@keyframes bg-scrolling-reverse {
+  100% {
+    background-position: $bg-width $bg-height;
+  }
+}
+
+@-webkit-keyframes bg-scrolling {
+  0% {
+    background-position: $bg-width $bg-height;
+  }
+}
+@-moz-keyframes bg-scrolling {
+  0% {
+    background-position: $bg-width $bg-height;
+  }
+}
+@-o-keyframes bg-scrolling {
+  0% {
+    background-position: $bg-width $bg-height;
+  }
+}
+@keyframes bg-scrolling {
+  0% {
+    background-position: $bg-width $bg-height;
+  }
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Exo:wght@100&display=swap');
+
+/* Main styles */
+.tartan-header {
+  // height: calc(100vh - 100px);
+  color: #999;
+  font: 600 1rem/1.5 'Exo', ubuntu, "segoe ui", helvetica, arial, sans-serif;
+  padding-top: 5rem;
+  padding-bottom: 10rem;
+
+  -webkit-animation: bg-scrolling-reverse 19s infinite; /* Safari 4+ */
+  -moz-animation: bg-scrolling-reverse 19s infinite; /* Fx 5+ */
+  -o-animation: bg-scrolling-reverse 19s infinite; /* Opera 12+ */
+  animation: bg-scrolling-reverse 19s infinite; /* IE 10+ */
+  -webkit-animation-timing-function: linear;
+  -moz-animation-timing-function: linear;
+  -o-animation-timing-function: linear;
+  animation-timing-function: linear;
+
+  h1 {
+    font-size: 4rem;
+    font-weight: 100;
+    font-style: normal;
+  }
+}
+
+.footer {
+  padding-top: 20px;
+  margin: 0;
+  bottom: 0;
+  min-height: 150px;
+  background-color: rgba(51, 51, 51, 0.10);
+}

@@ -1,0 +1,11 @@
+/* Exo thin font from Google. */
+@import url(https://fonts.googleapis.com/css?family=Exo);
+
+$bg-color: rgb(244, 244, 251);
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: $bg-color;
+}
