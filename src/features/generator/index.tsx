@@ -54,7 +54,7 @@ const initStage: StageProps = {
 
 
 
-const DisplayCanvas = () => {
+const Generator = () => {
 
   const SrcImg = useAppSelector(selectSrcImg);
   const tartan = useAppSelector(selectTartan)
@@ -246,5 +246,5 @@ const DisplayCanvas = () => {
   );
 };
 
-export default DisplayCanvas
+export default Generator
 

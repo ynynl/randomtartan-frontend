@@ -5,7 +5,7 @@ import { Button, AppBar, Toolbar, Typography, Link, Box, Menu, MenuItem, IconBut
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 
 import Home from './features/home';
-import { getloggedUser, loggout, logoutAsync, selectLoggedUser, } from './features/session/sessionSlice';
+import { getloggedUser, logoutAsync, selectLoggedUser, } from './features/session/sessionSlice';
 import './App.scss';
 import LoginForm from './features/session/LoginFrom';
 import Gallery from './features/gallery';
@@ -34,12 +34,11 @@ function App() {
 
   const dispatch = useAppDispatch()
   const user = useAppSelector(selectLoggedUser)
-  
+
   const handleLogout = () => {
     if (user) {
       dispatch(logoutAsync(user.id))
     }
-    dispatch(loggout()) 
   }
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -80,9 +79,6 @@ function App() {
           < MenuItem key='login'>
             <LoginForm />
           </MenuItem>,
-          // <MenuItem key='register'>
-          //   <RegisterForm />
-          // </MenuItem>
         ]
       }
     </Menu >
@@ -130,9 +126,6 @@ function App() {
                   <Box mr={3} className={classes.sectionDesktop}>
                     <LoginForm />
                   </Box>
-                  {/* <Box className={classes.sectionDesktop}>
-                    <RegisterForm />
-                  </Box> */}
                 </>}
 
               <div className={classes.sectionMobile}>

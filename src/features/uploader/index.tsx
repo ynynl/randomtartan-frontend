@@ -1,8 +1,8 @@
 import React from 'react';
-import { useAppDispatch } from '../../../app/hooks';
-import { creatColorsAsync, fetchTartan, setImgsrc, shuffleColors } from '../tartanSlice';
+import { useAppDispatch } from '../../app/hooks';
+import { creatColorsAsync, fetchTartan, setImgsrc, shuffleColors } from '../home/tartanSlice';
 import { Avatar, Box, Button, Typography } from '@material-ui/core';
-import { defaultValues } from '../../setting';
+import { defaultValues } from '../setting';
 import { unwrapResult } from '@reduxjs/toolkit';
 import img1 from './sample-1.jpeg'
 import img2 from './sample-2.jpeg'

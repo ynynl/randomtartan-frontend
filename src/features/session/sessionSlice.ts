@@ -10,34 +10,24 @@ import { Post, userEntity } from '../gallery/postsSlice';
 import { User } from '../users/usersSlice';
 import loginService from './sessionAPI';
 
-type ErrorMessage = {
-    id: string,
-    message: string
-}
-
 type SessionState = {
     user: undefined | User
     token: string,
     status: 'idle' | 'loading' | 'failed' | 'success',
-    error: ErrorMessage[]
 }
 
-export type LoginInput = { identifier: string, password: string }
-
-export type RegisterInput = { username: string, email: string, password: string }
-
-export const loginAsync = createAsyncThunk(
-    'auth/login',
-    async (credentials: LoginInput, { rejectWithValue }) => {
+export const callbackAsync = createAsyncThunk(
+    'auth/callback',
+    async (info: { provider: string, query: string }, { rejectWithValue }) => {
         try {
-            const res = await loginService.login(credentials);
+            const res = await loginService.callback(info.provider, info.query);
             const normalizedData = normalize(res.user, userEntity) as unknown as NormalizedSchema<{
                 post: { [key: string]: Post },
                 user: { [key: string]: User }
             }, any>
             return { jwt: res.jwt, logged: normalizedData }
         } catch (error) {
-            return rejectWithValue(error.response.data.message[0].messages)
+            return rejectWithValue(error.message)
         }
     }
 );
@@ -46,27 +36,9 @@ export const logoutAsync = createAsyncThunk(
     'auth/logout',
     async (id: number, { rejectWithValue }) => {
         try {
-            await loginService.logout(id);
-            return 
+            return await loginService.logout(id);
         } catch (error) {
-            return rejectWithValue(error.response.data.message[0].messages)
-        }
-    }
-);
-
-export const registerAsync = createAsyncThunk(
-    'auth/register',
-    async (credentials: RegisterInput, { rejectWithValue }) => {
-        try {
-            const res = await loginService.register(credentials);
-            const normalizedData = normalize(res.user, userEntity) as unknown as NormalizedSchema<{
-                post: { [key: string]: Post },
-                user: { [key: string]: User }
-            }, any>
-            return { jwt: res.jwt, logged: normalizedData }
-
-        } catch (error) {
-            return rejectWithValue(error.response.data.message[0].messages)
+            return rejectWithValue(error.message)
         }
     }
 );
@@ -75,9 +47,7 @@ const initialState: SessionState = {
     user: undefined,
     token: '',
     status: 'idle',
-    error: []
 }
-
 
 export const sessionSlice = createSlice({
     name: 'auth',
@@ -97,67 +67,44 @@ export const sessionSlice = createSlice({
             state.status = 'idle'
             window.localStorage.removeItem('loggedRandomTartanUser')
         },
-        clearErrorMessage: (state) => {
-            state.error = []
-        },
-        setLogin: (state, { payload }) => {
-            state.user = payload.user
-            state.token = payload.jwt
-            state.status = 'idle'
-            window.localStorage.setItem(
-                'loggedRandomTartanUser', JSON.stringify({ jwt: state.token, user: state.user })
-            )
-        }
     },
 
     extraReducers: (builder) => {
         builder
-            .addCase(loginAsync.pending, (state) => {
+            .addCase(callbackAsync.pending, (state) => {
                 state.status = 'loading';
             })
-            .addCase(loginAsync.fulfilled, (state, { payload }) => {
+            .addCase(callbackAsync.fulfilled, (state, { payload }) => {
                 state.user = payload.logged.entities.user[payload.logged.result]
                 state.status = 'success';
                 state.token = payload.jwt
-                state.error = []
                 window.localStorage.setItem(
                     'loggedRandomTartanUser', JSON.stringify({ jwt: state.token, user: state.user })
                 )
             })
-            .addCase(logoutAsync.fulfilled, (state) => {
-                state.status = 'success';
+            .addCase(callbackAsync.rejected, (state, action) => {
+                state.status = 'failed';
+                console.log(action.payload);
+            })
+            .addCase(logoutAsync.pending, (state) => {
+                state.status = 'loading';
                 state.user = undefined
                 state.token = ''
                 state.status = 'idle'
                 window.localStorage.removeItem('loggedRandomTartanUser')
             })
-            .addCase(loginAsync.rejected, (state, action) => {
-                state.status = 'failed';
-                console.log(action.payload);
-                state.error = action.payload as ErrorMessage[]
-            })
-            .addCase(registerAsync.pending, (state) => {
-                state.status = 'loading';
-            })
-            .addCase(registerAsync.fulfilled, (state, { payload }) => {
-                state.user = payload.logged.entities.user[payload.logged.result]
+            .addCase(logoutAsync.fulfilled, (state) => {
                 state.status = 'success';
-                state.token = payload.jwt
-                state.error = []
-                window.localStorage.setItem(
-                    'loggedRandomTartanUser', JSON.stringify({ jwt: state.token, user: state.user })
-                )
             })
-            .addCase(registerAsync.rejected, (state, action) => {
+            .addCase(logoutAsync.rejected, (state, { payload }) => {
                 state.status = 'failed';
-                state.error = action.payload as ErrorMessage[]
-            });
+                console.log(payload);
+            })
     },
 });
 
-export const { getloggedUser, loggout, clearErrorMessage, setLogin } = sessionSlice.actions;
+export const { getloggedUser } = sessionSlice.actions;
 export const selectLoggedUser = (state: RootState) => state.session.user;
-export const selectError = (state: RootState) => state.session.error;
 export const selectToken = (state: RootState) => state.session.token;
 
 export default sessionSlice.reducer;
